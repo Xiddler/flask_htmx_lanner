@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+    <!-- HTMX -->
+    <!-- <script src="https://unpkg.com/htmx.org@1.5.0"></script> -->
+    <script src="./node_modules/htmx.org/dist/htmx.js"></script>
+
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!--- sortable -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script> -->
+
+<style>
+#input_width {
+                      width: 90%;
+                  }
+</style>
+
+    <title>Flask HTMX Pastebin</title>
+  </head>
+  <body>
+    <div class="container">
+        <h1> LANNER </h1>
+         <div class='col-6'>
+          <form class="form-inline" hx-post="/name/create" hx-swap="beforebegin" hx-target="#newName" >
+            <div class="form-group mx-sm-3 mb-2">
+              <input type="text" id="input_width" class="fform-control" name="create" onfocus="this.value=''">
+            </div>
+            <div class="col text-center">
+              <button class="btn btn-primary mb-2 centre">Add Item</button>
+            </div>
+          </form>
+        </div> <!-- end class='col-6' --> 
+
+        <div class='col-6 py-3'>
+          <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">Delete</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody class="sortable" hx-post="/name/order" hx-include="tr" hx-trigger="end" hx-swap="none" >
+                  {%for i in items%}
+                  <form>
+                      <tr>
+                          <td style="visibility: hidden;">xxxxxxxxxxxxxxxxxxxxxxxx</td><td></td>
+                        
+                      </tr>
+                  <tr>
+                  <td id="input_width" style="border: none;" >{{i}}</td>
+                      <td><span id='clickableAwesomeFont'><i class='fas fa-trash fa-lg' name='{{i}}' hx-post='/name/delete' hx-vals='{"delete":
+                                  "{{i}}"}' hx-target='closest tr' hx-swap='outerHTML swap:0.3s'></i></span></td>
+                  </tr>
+
+                </form>
+                  {%endfor%}
+                  <tr id="newName"></tr>
+              </tbody>
+          </table>
+        </div>
+                           <button class="btn btn-success mb-2 centre" onClick="window.location.reload();">Refresh Page</button>
+    </div>
+  </body>
+</html>
+<script>
+  htmx.onLoad(function(content) {
+      var sortables = content.querySelectorAll(".sortable");
+      for (var i = 0; i < sortables.length; i++) {
+          var sortable = sortables[i];
+          new Sortable(sortable, {
+              animation: 150,
+              ghostClass: 'blue-background-class'
+          });
+      }
+  })
+</script>
